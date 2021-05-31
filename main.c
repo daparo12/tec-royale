@@ -21,8 +21,10 @@ void myturn(void *x){
 
 
 
-int main() {
+int main(int argc, char **argv) {
 
-	parse_file();
+	const char * file = argv[2];
+
+	parse_file(file);
 
 }

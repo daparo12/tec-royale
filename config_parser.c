@@ -1,8 +1,8 @@
 #include "my_thread.h"
 
-int parse_file() {
+int parse_file(const char * file) {
 
-	FILE *ptofile = fopen("config/config1.txt", "r");
+	FILE *ptofile = fopen(file , "r");
 
 	int line = 0;
 
@@ -20,7 +20,7 @@ int parse_file() {
 	while(1){
     fgets(input,64,ptofile);
 		if(strcmp(strtok(input, "\n"), "fin") == 0){
-      printf("end");
+      printf("end \n");
 			break;
 		}else if(strcmp(strtok(input, "\n"), "-") == 0){
 			continue;
