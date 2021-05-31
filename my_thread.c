@@ -104,6 +104,7 @@ void my_thread_create(void (*thread_function) (), void *args, int tickets_s, int
 			setitimer(ITIMER_REAL, &it, NULL);
 
 			struct sigaction act;
+			//https://man7.org/linux/man-pages/man2/sigaction.2.html
 			act.sa_sigaction = sched_alternator;
 
 			sigemptyset(&act.sa_mask);

@@ -1,6 +1,6 @@
 
 #define my_thread_h
-
+#include<malloc.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -8,9 +8,11 @@
 #include <signal.h>
 #include <ucontext.h>
 #include <sys/types.h>
+#include <string.h>
 #define TAM_STACK 10000
 #define NUM_THREADS 1000
 #define INTERVAL 150
+#define ITEMS_COUNT 10
 
 
 sigset_t set;
@@ -37,10 +39,36 @@ void my_thread_join();
 
 void my_thread_detach();
 
-void run_threads(); 
+void run_threads();
 
 void *signal_stack;
 
-static void set_exit_context();
+/* The monitor information for the animation */
+typedef struct item_info {
 
+  char *ascii_item[ITEMS_COUNT]; //list of items
+  int posicion_actual_x;
+  int scheduler;
+  int posicion_actual_y;
+  int posicion_inicial_x;
+  int posicion_inicial_y;
+  int posicion_final_x;
+  int posicion_final_y;
+}item_info;
+
+/* Configuration struct  */
+typedef struct config {
+
+  item_info *item_list[ITEMS_COUNT];
+  int espacio_entre_objetos;
+  int canvas_h;
+  int canvas_l;
+
+}config;
+
+void my_thread_create(void (*thread_function) (), void *args, int tickets_s, int priority_s);
+void print_warriors(void *x);
+int parse_file();
+static void set_exit_context();
+extern config *configuration;
 void set_thread_context();
