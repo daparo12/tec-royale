@@ -4,11 +4,11 @@
 #define DELAY 35000
 
 int main(int argc, char *argv[]) {
-  int x = 0,
-      y = 0;
+  int x = 10,
+      y = 10;
 
-  int max_x = 0,
-      max_y = 0;
+  int max_x = 10,
+      max_y = 10;
 
   int next_x = 0;
 
