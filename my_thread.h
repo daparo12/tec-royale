@@ -9,6 +9,7 @@
 #include <ucontext.h>
 #include <sys/types.h>
 #include <string.h>
+#include <ncurses.h>
 #define TAM_STACK 10000
 #define NUM_THREADS 1000
 #define INTERVAL 150
@@ -56,19 +57,31 @@ typedef struct item_info {
   int posicion_final_y;
 }item_info;
 
+typedef struct monitor_info {
+
+  WINDOW *canvas;  //monitor id
+  int start_canvas_area; //monitor canvas area
+  int end_canvas_area;
+  int canvas_h;
+  int canvas_l;
+
+}monitor_info;
+
+
 /* Configuration struct  */
 typedef struct config {
 
   item_info *item_list[ITEMS_COUNT];
   int espacio_entre_objetos;
-  int canvas_h;
-  int canvas_l;
-
 }config;
+
 
 void my_thread_create(void (*thread_function) (), void *args, int tickets_s, int priority_s);
 void print_warriors(void *x);
 int parse_file();
 static void set_exit_context();
+
+extern monitor_info *tmp_monitor;
+
 extern config *configuration;
 void set_thread_context();

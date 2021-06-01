@@ -5,7 +5,6 @@
 #include "my_sched.h"
 config *configuration;
 
-
 void myturn(void *x){
 	int **params = x;
   int *number = params[0];
@@ -24,5 +23,6 @@ void myturn(void *x){
 int main() {
 
 	parse_file();
+	create_canvas();
 
 }
