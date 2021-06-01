@@ -1,9 +1,8 @@
 #include "my_thread.h"
 
+int parse_file(const char * file) {
 
-int parse_file() {
-
-	FILE *ptofile = fopen("config/config1.ini", "r");
+	FILE *ptofile = fopen(file , "r");
 
 	int line = 0;
 
@@ -37,6 +36,7 @@ int parse_file() {
 			for(int i = 0; i<2; i++){
 				tmp_item->ascii_item[i] = (char *) malloc(sizeof(char)+1);
 			}
+
 
 			strcpy(tmp_item->ascii_item[0], strtok(fgets(input, 64, ptofile), "\n"));
 			strcpy(tmp_item->ascii_item[1], strtok(fgets(input, 64, ptofile), "\n"));

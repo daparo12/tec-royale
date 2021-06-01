@@ -10,7 +10,7 @@ void create_canvas(){
 
   monitor_info *tmp_monitor = (monitor_info *) malloc(sizeof(monitor_info));
   printf("%d \n ", tmp_monitor->canvas_l);
-  
+
   /*
   int x = 0, y = 0;
 
