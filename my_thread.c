@@ -1,6 +1,7 @@
 
 #include "my_thread.h"
 #include "my_sched.h"
+#include "my_mutex.h"
 
 void my_thread_end(){
 
