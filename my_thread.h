@@ -53,8 +53,8 @@ typedef struct warrior_props {
   int posicion_actual_y;
   int posicion_inicial_x;
   int posicion_inicial_y;
-  int posicion_final_x;
-  int posicion_final_y;
+  int damage;
+  int health;
   int tiempo_inicial;
   int tiempo_final;
 }warrior_props;

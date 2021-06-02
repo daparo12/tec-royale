@@ -18,8 +18,12 @@ int main(int argc, char **argv) {
 	int warrior_iterator = 0;
 	parse_file(file);
 	create_canvas();
+	//char *a = (char *) malloc(sizeof(char)+1);
+//	a = configuration->warrior_list[0]->ascii_item[1];
+	//printf("%c \n", a[1] );
+//	printf("%s \n ", configuration->warrior_list[0]->ascii_item[0]);
 
-	//printf("%s \n ", configuration->warrior_list[0]->ascii_item[0]);
+
 
 
 	while(configuration->warrior_list[warrior_iterator] != NULL){

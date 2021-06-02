@@ -39,8 +39,8 @@ int parse_file(const char * file) {
 			strcpy(tmp_item->ascii_item[1], strtok(fgets(input, 64, ptofile), "\n"));
 			tmp_item->posicion_inicial_x = atoi(strtok(fgets(input, 64, ptofile), "/"));
 			tmp_item->posicion_inicial_y = atoi(strtok(NULL, "\n"));
-			tmp_item->posicion_final_x = atoi(strtok(fgets(input, 64, ptofile), "/"));
-			tmp_item->posicion_final_y = atoi(strtok(NULL, "\n"));
+			tmp_item->damage = atoi(strtok(fgets(input, 64, ptofile), "/"));
+			tmp_item->health = atoi(strtok(NULL, "\n"));
 			configuration->warrior_list[index] = (warrior_props *) malloc(sizeof(warrior_props));
 			configuration->warrior_list[index] = tmp_item; //Guarda un guerrero en la lista de guerreros de un jugador
 
