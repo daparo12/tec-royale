@@ -9,9 +9,9 @@ config* configuration;
 
 char top[10] = {' ','_',' ',' ',' ','|','~',' ',' ','_',' '};
 char tow[11] = {'[','_',']','-','-',' ','-','-','[','_',']'};
-char windo[11] = {'|',' ','|',' ',' ',' ',' ',' ',' ','|',' ','|'};
-char bed[11] = {'|',' ','|',' ','<','^','>',' ','|',' ','|'};
-char door[11] = {'|','_','|','_','|','I','|','_','|','_','|'};
+char windo[11] = {'[','_',']','-','-',' ','-','-','[','_',']'};
+char bed[11] = {'[',' ',']',' ','<','^','>',' ','[',' ',']'};
+char door[11] = {'[','_',']','_','[','I',']','_','[','_',']'};
 
 void myke_towers(){
   //P1 up
@@ -45,8 +45,8 @@ void draw_river(){
   int river_layer2 = (configuration->canvas_l/2) + 5;
   int river_end = (configuration->canvas_h-1);
   for(int i=1;i!=river_end;i++){
-    mvwprintw(configuration -> canvas,i, river_layer1, "|");
-    mvwprintw(configuration -> canvas,i, river_layer2, "|");
+    mvwprintw(configuration -> canvas,i, river_layer1, "x");
+    mvwprintw(configuration -> canvas,i, river_layer2, "x");
   }
 
 }
