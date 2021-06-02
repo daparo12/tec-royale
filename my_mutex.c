@@ -34,7 +34,7 @@ void mutex_lock(int *lock) {
     while (*lock){
         sleep(1);
     }
-    test_and_set(lock);
+    set_lock(lock);
 }
 
 void mutex_unlock(int *lock) {
@@ -52,5 +52,5 @@ void mutex_trylock(int *lock) {
     while (*lock){
         usleep(1000);
     }
-    test_and_set(lock);
+    set_lock(lock);
 }

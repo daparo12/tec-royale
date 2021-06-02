@@ -159,11 +159,7 @@ void sched_alternator(){
 
     switch_sched = 0;
 
-    printf("sched_actual %d \n ",sched_actual);
-    printf("switch_sched %d \n ",switch_sched);
-    // Alterna el valor de sched_actual
     switch_sched = switch_sched^sched_actual;
-    printf("switch_sched %d \n ", switch_sched);
 
 
     // Se envia el valor del nuevo algoritmo de scheduling a utilizar

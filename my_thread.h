@@ -45,7 +45,7 @@ void run_threads();
 void *signal_stack;
 
 /* The monitor information for the animation */
-typedef struct item_info {
+typedef struct warrior_props {
 
   char *ascii_item[ITEMS_COUNT]; //list of items
   int posicion_actual_x;
@@ -55,33 +55,27 @@ typedef struct item_info {
   int posicion_inicial_y;
   int posicion_final_x;
   int posicion_final_y;
-}item_info;
-
-typedef struct monitor_info {
-
-  WINDOW *canvas;  //monitor id
-  int start_canvas_area; //monitor canvas area
-  int end_canvas_area;
-  int canvas_h;
-  int canvas_l;
-
-}monitor_info;
+  int tiempo_inicial;
+  int tiempo_final;
+}warrior_props;
 
 
 /* Configuration struct  */
 typedef struct config {
 
-  item_info *item_list[ITEMS_COUNT];
+  warrior_props *warrior_list[ITEMS_COUNT];
   int espacio_entre_objetos;
+  int canvas_h;
+  int canvas_l;
+  WINDOW *canvas;  //monitor id
 }config;
 
-
+void myke_towers();
+void game_lock();
+void move_warriors(void *arg);
 void my_thread_create(void (*thread_function) (), void *args, int tickets_s, int priority_s);
 void print_warriors(void *x);
 int parse_file();
 static void set_exit_context();
-
-extern monitor_info *tmp_monitor;
-
 extern config *configuration;
 void set_thread_context();
