@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-
 #define BOARDX  5
 #define BOARDY  5
 #define BOARDW  (BOARDX*2)              // length of text line
