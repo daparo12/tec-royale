@@ -3,38 +3,43 @@
 #include "my_sched.h"
 #include "my_mutex.h"
 
-void my_thread_end(){
-
-		//Finaliza o "mata" un hilo y cambia de scheduler.
-
-		boolean_dead_threads[context_actual] = 1;
-    total_tickets-=tickets[context_actual];
-    threads_activos_aux--;
-
-    sched_alternator();
-
-}
 
 
-void my_thread_yield(){
 
-	//Cede el procesador mediante la función de cambiar sched.
-	sched_alternator();
-}
 
 void run_threads(){
     thread_actual = &threads[0];
     setcontext(&threads[0]);  //ejectutar los hilos creados
 }
 
+
+
+void my_thread_end(){
+
+		//Finaliza o "mata" un hilo y cambia de scheduler.
+
+		hilos_terminados[context_actual] = 1; //Se marca con un 1, representa un thread muerto
+    total_tiquetes-=tiquetes[context_actual];
+    threads_activos_aux--;
+
+    change_sched();
+
+}
+
+
+void my_thread_yield(){
+	//Cede el procesador mediante la función de cambiar sched.
+	change_sched();
+}
+
 static void execute_exit_context(){
 
 		//Cede el procesador al terminal los hilos.
-    boolean_dead_threads[context_actual] = 1;
-    total_tickets -= tickets[context_actual];
+    hilos_terminados[context_actual] = 1;
+    total_tiquetes -= tiquetes[context_actual];
     threads_activos_aux--;
 
-    sched_alternator();
+    change_sched();
 
     while(1);
 }
@@ -80,16 +85,18 @@ void my_thread_detach(ucontext_t *thread_to_detach){
 
 }
 
-void my_thread_create(void (*thread_function) (), void *args, int tickets_s, int priority_s){
+void my_thread_create(void (*thread_function) (), void *args, int tiquetes_s, int priority_s, int sched){
 
-		//Recibe la función a ejecutar, los argumentos de esa funcion, los tickets para el sorteo y la prioridad
+		//Recibe la función a ejecutar, los argumentos de esa funcion, los tiquetes para el sorteo y la prioridad
+
 
 		if (!init) {
 			int i;
 
 			//Set thread context
-			for(i = 0; i < NUM_THREADS; i++) boolean_dead_threads[i] = 0; //Inicializar el array de threads muertos
+			for(i = 0; i < NUM_THREADS; i++) hilos_terminados[i] = 0; //Inicializar el array de threads muertos
 
+			global_current_sched = sched;
 			set_exit_context();
 			struct itimerval it; //Para quantum
 
@@ -106,7 +113,7 @@ void my_thread_create(void (*thread_function) (), void *args, int tickets_s, int
 
 			struct sigaction act;
 			//https://man7.org/linux/man-pages/man2/sigaction.2.html
-			act.sa_sigaction = sched_alternator;
+			act.sa_sigaction = change_sched;
 
 			sigemptyset(&act.sa_mask);
 			act.sa_flags = SA_RESTART | SA_SIGINFO;
@@ -140,9 +147,10 @@ void my_thread_create(void (*thread_function) (), void *args, int tickets_s, int
     // Se manda la funcion al context
     makecontext(thread,(void (*)(void))thread_function, 1, args);
 
-    tickets[threads_activos] = tickets_s;
+
+    tiquetes[threads_activos] = tiquetes_s;
     priority[threads_activos] = priority_s;
-    total_tickets += tickets_s;
+    total_tiquetes += tiquetes_s;
     threads_activos++;
     threads_activos_aux++;
 

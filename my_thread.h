@@ -26,11 +26,12 @@ int threads_activos;
 int threads_activos_aux;
 int priority[NUM_THREADS];
 int priority_aux[NUM_THREADS];
-int tickets[NUM_THREADS];
-int total_tickets;
-int boolean_dead_threads[NUM_THREADS];
+int tiquetes[NUM_THREADS];
+int total_tiquetes;
+int hilos_terminados[NUM_THREADS];
+int global_current_sched;
 
-void my_thread_create(void (*thread_function) (), void *args, int tickets, int priority);
+void my_thread_create(void (*thread_function) (), void *args, int tiquetes_s, int priority_s, int sched);
 
 void my_thread_end();
 
@@ -59,8 +60,6 @@ typedef struct warrior_props {
   int tiempo_final;
 }warrior_props;
 
-
-/* Configuration struct  */
 typedef struct config {
 
   warrior_props *warrior_list[ITEMS_COUNT];
@@ -73,7 +72,6 @@ typedef struct config {
 void myke_towers();
 void game_lock();
 void move_warriors(void *arg);
-void my_thread_create(void (*thread_function) (), void *args, int tickets_s, int priority_s);
 void print_warriors(void *x);
 int parse_file();
 static void set_exit_context();

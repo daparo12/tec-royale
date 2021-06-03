@@ -10,8 +10,6 @@
 #include "my_thread.h"
 #include "my_sched.h"
 
-// Documentar
-
 int switch_sched;
 
 void real_time_sched(){
@@ -19,7 +17,7 @@ void real_time_sched(){
     //Al menos un thread debe estar activo
 
 
-    int aux = -100;
+    int aux = -1;
     int last = context_actual;
     int i;
 
@@ -31,7 +29,7 @@ void real_time_sched(){
         // ejecutado
         for (i = 0; i < threads_activos; i++) {
 
-            if(aux < priority[i] && !boolean_dead_threads[i] && !priority_aux[i]){
+            if(aux < priority[i] && !hilos_terminados[i] && !priority_aux[i]){
 
                 context_actual = i;
                 aux = priority[i];
@@ -69,10 +67,10 @@ void round_robin(){
         context_actual = (context_actual + 1); // Cambia al siguiente context
 
         // Verificar si el thread sigue vivo
-        if(boolean_dead_threads[context_actual% threads_activos]){
+        if(hilos_terminados[context_actual% threads_activos]){
 
             // Sigue revisando la lista hasta que encuentre un thread vivo
-            while(boolean_dead_threads[context_actual% threads_activos]){
+            while(hilos_terminados[context_actual% threads_activos]){
                 context_actual+=1;
             }
         }
@@ -88,7 +86,7 @@ void round_robin(){
 
 void sort_scheduler(){
 
-    //Scehduler sort, utiliza los tickets
+    //Scehduler sort, utiliza los tiquetes
     srand(time(NULL));
 
     int aux;
@@ -96,17 +94,17 @@ void sort_scheduler(){
     // cchek si hay activos
     if(threads_activos_aux > 0){
 
-        int winner = rand()%(total_tickets+1);//Determina el ganador del sorteo
+        int winner = rand()%(total_tiquetes+1);//Determina el ganador del sorteo
         aux = winner;
         int i;
 
         for (i = 0; i < threads_activos; i++) {
 
-            aux -= tickets[i];
+            aux -= tiquetes[i];
 
             if(aux<=0){
-                if(boolean_dead_threads[i% threads_activos]){
-                    while(boolean_dead_threads[i% threads_activos]){
+                if(hilos_terminados[i% threads_activos]){
+                    while(hilos_terminados[i% threads_activos]){
                         i+=1;
                     }
                 }
@@ -118,8 +116,8 @@ void sort_scheduler(){
 
             else{
 
-                tickets[i]++;
-                total_tickets++;
+                tiquetes[i]++;
+                total_tiquetes++;
             }
         }
         setcontext(thread_actual);//Llama al nuevo hilo
@@ -145,25 +143,16 @@ void cambiar_scheduler(int change_sched_to){
     }
 }
 
-void sched_alternator(){
-
+void change_sched(){
     //Cambia el scheduler actual
-
     getcontext(&signal_context);
-
     signal_context.uc_stack.ss_sp = signal_stack;  //Se iguala al stack creado en thread.c
     signal_context.uc_stack.ss_size = TAM_STACK;
     signal_context.uc_stack.ss_flags = 0;
-
     sigemptyset(&signal_context.uc_sigmask);
 
-    switch_sched = 0;
-
-    switch_sched = switch_sched^sched_actual;
-
-
     // Se envia el valor del nuevo algoritmo de scheduling a utilizar
-    cambiar_scheduler(switch_sched);
+    cambiar_scheduler(global_current_sched);
 
     if(sched_actual == 0){
       makecontext(&signal_context, round_robin, 1);

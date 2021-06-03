@@ -10,7 +10,7 @@
 config* configuration;
 int fieldLock;
 time_t t;
-/* Intializes random number generator */
+
 
 void game_lock(){
 
@@ -18,35 +18,61 @@ void game_lock(){
 }
 
 
+
 void move_warriors(void *arg){
+
+
+   mutex_lock(&fieldLock);
    int tiempo_ini = 0;
    int tiempo_fin = 10;
+   mutex_unlock(&fieldLock);
 
+   mutex_lock(&fieldLock);
    warrior_props *figure = (warrior_props *) arg;
+   mutex_unlock(&fieldLock);
+
+   mutex_lock(&fieldLock);
    char *warrior_level_char = (char *) malloc(sizeof(char)+1);
    warrior_level_char = figure->ascii_item[1];
    char *warrior_level = warrior_level_char[1];
    //printf("%c", a );
+   mutex_unlock(&fieldLock);
 
 
 
-
+   mutex_lock(&fieldLock);
+   int ch;
+   int front_warrior_level;
+   int current_warrior_level;
    figure->posicion_actual_x = figure->posicion_inicial_x;
    figure->posicion_actual_y = figure->posicion_inicial_y;
+   mutex_unlock(&fieldLock);
+
 
    if(figure -> posicion_inicial_x > configuration->canvas_l/2 ){ //Significa que el guerrero es del p2
 
-
-
-     while(figure -> posicion_actual_x > 5 ) {
-       int ch = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x) & A_CHARTEXT;
-       //printf("%d\n",ch);
-
+     while(figure -> posicion_actual_x > 13 ) {
+       mutex_lock(&fieldLock);
+       ch = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x) & A_CHARTEXT;
+       mutex_unlock(&fieldLock);
        if(ch == 124){
 
-         int front_warrior_level = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x-4) & A_CHARTEXT;
-         break;
-         //int ch = mvwinch(configuration -> canvas, figure->posicion_actual_y-2,figure->posicion_actual_x) & A_CHARTEXT;
+         mutex_lock(&fieldLock);
+         front_warrior_level = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x-3) & A_CHARTEXT; //Funcional
+         current_warrior_level = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x+4) & A_CHARTEXT; //Funcional
+         mutex_unlock(&fieldLock);
+         //printf("%d b> \n", front_warrior_level);
+
+         if(front_warrior_level > current_warrior_level){
+
+           //printf("p2 won");
+           mutex_lock(&fieldLock);
+           figure->ascii_item[0] = "  ";
+           figure->ascii_item[1] = "  ";
+           mutex_unlock(&fieldLock);
+
+           break;
+         }
 
        }
 
@@ -71,22 +97,50 @@ void move_warriors(void *arg){
        //Mueve una vez
        mvwprintw(configuration -> canvas,figure->posicion_actual_y,figure -> posicion_actual_x, figure->ascii_item[0]);
        mvwprintw(configuration -> canvas,figure->posicion_actual_y+1,figure -> posicion_actual_x, figure-> ascii_item[1]);
+
+       mutex_lock(&fieldLock);
        figure->posicion_actual_x = figure->posicion_actual_x - 1;
+       mutex_unlock(&fieldLock);
+
+
+
        wrefresh(configuration-> canvas);
        usleep(100000);
      }
 
+     if(figure -> posicion_actual_x == 13){
+       erase();
+       mvwprintw(configuration -> canvas,30,10, "Gana el jugador 2");
+       usleep(99999999999999999999);
+     }
+
+
    }
 
    else{ //guerrero del p1
-     while(figure -> posicion_actual_x < 134 ) {
-       int ch = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x+4) & A_CHARTEXT;
-       //printf("a: %d\n ",ch);
+     while(figure -> posicion_actual_x < 130 ) {
+       mutex_lock(&fieldLock);
+       ch = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x+4) & A_CHARTEXT;
+       mutex_unlock(&fieldLock);
 
        if(ch == 124){
+         mutex_lock(&fieldLock);
 
-         break;
-         //int ch = mvwinch(configuration -> canvas, figure->posicion_actual_y-2,figure->posicion_actual_x) & A_CHARTEXT;
+         front_warrior_level = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x+5) & A_CHARTEXT; //ESTA MAL
+         current_warrior_level = mvwinch(configuration -> canvas, figure->posicion_actual_y+1,figure->posicion_actual_x) & A_CHARTEXT; //Funcional
+         //mvwprintw(configuration -> canvas,figure->posicion_actual_y+4,figure -> posicion_actual_x, "front_warrior_level");
+         //printf("%d a>", front_warrior_level);
+         mutex_unlock(&fieldLock);
+
+         if(front_warrior_level > current_warrior_level){
+
+           mutex_lock(&fieldLock);
+           figure->ascii_item[0] = " ";
+           figure->ascii_item[1] = " ";
+           mutex_unlock(&fieldLock);
+
+           break;
+         }
 
        }
 
@@ -104,24 +158,35 @@ void move_warriors(void *arg){
        mvwprintw(configuration -> canvas,figure->posicion_actual_y+1,figure -> posicion_actual_x, " ");
        mvwprintw(configuration -> canvas,figure->posicion_actual_y+1,figure -> posicion_actual_x-1," ");
 
-
-
-
        //Actualiza
        wrefresh(configuration-> canvas);
 
        //Mueve una vez
        mvwprintw(configuration -> canvas,figure->posicion_actual_y,figure -> posicion_actual_x, figure->ascii_item[0]);
        mvwprintw(configuration -> canvas,figure->posicion_actual_y+1,figure -> posicion_actual_x, figure-> ascii_item[1]);
+
+       mutex_lock(&fieldLock);
        figure->posicion_actual_x = figure->posicion_actual_x + 1;
+       mutex_unlock(&fieldLock);
+
        wrefresh(configuration-> canvas);
        usleep(100000);
      }
+     if(figure -> posicion_actual_x == 130){
+       erase();
+       mvwprintw(configuration -> canvas,30,10, "Gana el jugador 1");
+       usleep(99999999999999999999);
+     }
+
+
+
+
  }
 
-
+   mutex_lock(&fieldLock);
    figure -> posicion_actual_x = figure -> posicion_inicial_x;
    figure -> posicion_actual_y = figure -> posicion_inicial_y;
+   mutex_unlock(&fieldLock);
 
    wrefresh(configuration-> canvas);
    //usleep(800000);
